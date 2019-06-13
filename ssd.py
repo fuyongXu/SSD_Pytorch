@@ -188,3 +188,15 @@ mbox = {
     '300': [4, 6, 6, 6, 4, 4],           #number of boxes per feature map location
     '512': [],
 }
+
+def build_ssd(phase, size=300, num_classes=21):
+    if phase !="test" and phase !="train":
+        print("ERROR:Phase: "+phase+"not recognized")
+        return
+    if size != 300:
+        print("ERROR:You specified size "+repr(size)+". However, "+"currently only SSD300(size=300)is supported")
+        return
+    base_, extras_, head_ = multibox(vgg(base[str(size)], 3),
+                                     add_extras(extras[str(size)], 1024),
+                                     mbox[str(size)], num_classes)
+    return SSD(phase, size, base_, extras_, head_, num_classes)
